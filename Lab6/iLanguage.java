@@ -9,6 +9,13 @@ public interface iLanguage {
         eENG
     }
 
+    enum enValute
+    {
+        emoneyPND,
+        emoneyRUB,
+        emoneyBYN
+    }
+
     String Get_Translation(String Key);
     void Set_Translation(String KeyField, String theTranslation);
     ///fields

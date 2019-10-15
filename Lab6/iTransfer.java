@@ -1,6 +1,11 @@
 package Lab6;
 
 public interface iTransfer {
-    public abstract double Get_Price();
-    public abstract double Get_Time();
+    enum enWay
+    {
+        eCargo,
+        ePassanger
+    }
+    public abstract classMoney Get_Price(String fromcity, String tocity);
+    public abstract classTime Get_Time(String fromcity, String tocity);
 }
