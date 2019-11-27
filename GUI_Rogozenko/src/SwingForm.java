@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -10,6 +11,10 @@ import java.util.Objects;
 public class SwingForm {
 
     private String colNames[] = new String[] {Baggage.P_flightNumber, Baggage.P_date, Baggage.P_destination, Baggage.P_weight};
+
+    private final String STR_STATUS_WAITING = "Ожидание пользователя",
+                         STR_STATUS_ERROR = "Произошла ошибка",
+                         STR_STATUS_SUCCESS = "Успешно выполнено";
 
     private static JFrame frame;
     private JPanel MainPanel;
@@ -37,6 +42,9 @@ public class SwingForm {
     private JScrollPane ScrollPanel_BaggageTableq;
     private JTable Table_Baggage;
     private JLabel Label_Index;
+    private JLabel Label_WordStatus;
+    private JLabel Label_CurrentStatus;
+    private JLabel Label_LatestMessage;
 
     private JRadioButton jRadioButton[] = new JRadioButton[] {RButton_Date, RButton_Weight, RButton_FlightNumber, RButton_To};
     private String strIndex[] = new String[] {"dat", "w", "fn", "dest"};
@@ -48,6 +56,14 @@ public class SwingForm {
     {
         Table_Baggage.setModel(new DefaultTableModel(oBaggage, colNames));
     }
+
+
+    private  void setStatus(boolean isSuccess)
+    {
+        Label_CurrentStatus.setText(isSuccess ? STR_STATUS_SUCCESS : STR_STATUS_ERROR);
+        Label_CurrentStatus.setForeground(isSuccess ? Color.GREEN : Color.RED);
+    }
+
 
 
     private Object[][] arrConvertToObjects(ArrayList<Baggage> baggages)
@@ -87,11 +103,11 @@ public class SwingForm {
             {
                 try {
                     Main.appendFile(false, userFile);
+                    setStatus(true);
                 }
                 catch(Exception ex)
                 {
-                    System.err.println(ex);
-                    //appendTextToPanel(MessageFormat.format(STR_FORMAT_APPEND_FILE_ERROR, userFile.getName()));
+                    setStatus(false);
                 }
             }
         });
@@ -100,10 +116,9 @@ public class SwingForm {
         Button_PrintDataUnsorted.addActionListener(actionEvent -> {
             try {
                 printBaggageToTable(arrConvertToObjects(Main.printFile()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                setStatus(true);
+            } catch (IOException | ClassNotFoundException e) {
+                setStatus(false);
             }
         });
 
@@ -114,17 +129,18 @@ public class SwingForm {
             {
                 try {
                     Main.appendFile(true, userFile);
-                    System.out.println("suc");
+                    setStatus(true);
+
                 }
                 catch(Exception ex)
                 {
-                    System.err.println(ex);
-                    //appendTextToPanel(MessageFormat.format(STR_FORMAT_APPEND_FILE_ERROR, userFile.getName()));
+                    setStatus(false);
                 }
             }
         });
         Button_ClearAllData.addActionListener(actionEvent -> {
             Main.deleteFile();
+            setStatus(true);
         });
         TextField_Key.addCaretListener(caretEvent -> {
             if (TextField_Key.getText().length() > 0)
@@ -166,59 +182,62 @@ public class SwingForm {
         Button_PrintSortedByRadio.addActionListener(actionEvent -> {
             try {
                 printBaggageToTable(arrConvertToObjects(Objects.requireNonNull(Main.printFile(strCurrentIndex, false))));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                setStatus(true);
+
+            } catch (ClassNotFoundException | IOException e) {
+                setStatus(false);
             }
         });
         Button_PrintReversedSortedByRadio.addActionListener(actionEvent -> {
             try {
                 printBaggageToTable(arrConvertToObjects(Objects.requireNonNull(Main.printFile(strCurrentIndex, true))));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                setStatus(true);
+            } catch (ClassNotFoundException | IOException e) {
+                setStatus(false);
             }
         });
         Button_FindMoreThanKey.addActionListener(actionEvent -> {
             try {
-                printBaggageToTable(arrConvertToObjects(Objects.requireNonNull(Main.findByKey(strCurrentIndex,strCurrentKey, new KeyComp()))));
+                printBaggageToTable(arrConvertToObjects(Objects.requireNonNull(Main.findByKey(strCurrentIndex,strCurrentKey, new KeyCompReverse()))));
+                setStatus(true);
             } catch (ClassNotFoundException | IOException e) {
-                e.printStackTrace();
+
+                Label_CurrentStatus.setText(STR_STATUS_ERROR);
+                Label_CurrentStatus.setForeground(Color.RED);
             }
         });
         Button_FindLessThanKey.addActionListener(actionEvent -> {
             try {
-                printBaggageToTable(arrConvertToObjects(Objects.requireNonNull(Main.findByKey(strCurrentIndex,strCurrentKey, new KeyCompReverse()))));
+                printBaggageToTable(arrConvertToObjects(Objects.requireNonNull(Main.findByKey(strCurrentIndex,strCurrentKey, new KeyComp()))));
+                setStatus(true);
             } catch (ClassNotFoundException | IOException e) {
-                e.printStackTrace();
+                setStatus(false);
             }
         });
         Button_FindByKey.addActionListener(actionEvent -> {
             try {
                 printBaggageToTable(arrConvertToObjects(Objects.requireNonNull(Main.findByKey(strCurrentIndex,strCurrentKey))));
+                setStatus(true);
             } catch (ClassNotFoundException | IOException e) {
-                e.printStackTrace();
+                setStatus(false);
+
             }
         });
         Button_PrintReversedSortedByRadio.addActionListener(actionEvent -> {
             try {
                 printBaggageToTable(arrConvertToObjects(Objects.requireNonNull(Main.printFile(strCurrentIndex,true))));
+                setStatus(true);
             } catch (ClassNotFoundException | IOException e) {
-                e.printStackTrace();
+                setStatus(false);
             }
         });
         Button_ClearAllDataByKey.addActionListener(actionEvent -> {
             try {
                 Main.deleteFile(strCurrentIndex, strCurrentKey);
                 printBaggageToTable(arrConvertToObjects(Objects.requireNonNull(Main.printFile())));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (KeyNotUniqueException e) {
-                e.printStackTrace();
+                setStatus(true);
+            } catch (ClassNotFoundException | KeyNotUniqueException | IOException e) {
+                setStatus(false);
             }
         });
     }

@@ -1,5 +1,6 @@
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class  Main {
@@ -248,7 +249,7 @@ public class  Main {
               RandomAccessFile raf = new RandomAccessFile( filename, "rw" )) {
             IndexBase pidx = indexByArg( index, idx );
             if ( pidx == null ) {
-                return null;
+                return new ArrayList<>();
             }
             String[] keys =
                     pidx.getKeys( reverse ? new KeyCompReverse() : new KeyComp() );
@@ -267,7 +268,7 @@ public class  Main {
             IndexBase pidx = indexByArg( index, idx );
             if (!pidx.contains(strkey)) {
                 System.err.println( "Key not found: " + strkey );
-                return null;
+                return new ArrayList();
             }
 
             getRecord( raf, strkey, pidx );
