@@ -21,7 +21,7 @@
   </component>
   <component name="ProjectId" id="1Tuuj5BPYuWlHcq5yMsycIGcIWo" />
   <component name="PropertiesComponent">
-    <property name="UI_DESIGNER_EDITOR_MODE.PaletteManager.SHOW" value="false" />
+    <property name="UI_DESIGNER_EDITOR_MODE.PaletteManager.SHOW" value="true" />
     <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.SHOW" value="true" />
     <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.WIDTH" value="229" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />

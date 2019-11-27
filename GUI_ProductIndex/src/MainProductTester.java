@@ -32,6 +32,7 @@ public class MainProductTester {
         deleteBackup();
         new File(FILE_NAME).delete();
         new File(IDX_NAME).delete();
+        sortedProductRecords.clear();
     }
 
     public static void backup() {
@@ -111,7 +112,7 @@ public class MainProductTester {
         boolean[] wasZipped = new boolean[] {false};
         ProductRecord record = (ProductRecord) Buffer.readObject( raf, pos, wasZipped );
         if (wasZipped[0]) {
-            System.out.print( " compressed" );
+            //System.out.print( " compressed" );
         }
         return record;
         //System.out.println( " record at position "+ pos + ": \n" + record );
@@ -162,6 +163,7 @@ public class MainProductTester {
 
     public static boolean getDataToPrint(String index, boolean reverse )
             throws ClassNotFoundException, IOException {
+        //correct
         sortedProductRecords.clear();
         try (Index idx = Index.load(IDX_NAME);
              RandomAccessFile raf = new RandomAccessFile(FILE_NAME, "rw" )) {
